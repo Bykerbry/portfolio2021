@@ -6,9 +6,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 const Resume = () => {
 
-  const onDocumentLoadSuccess = () => {
-    console.log('resume loaded!')
-  }
+  const onDocumentLoadSuccess = () => {}
+  
   return (
     <section id='resume'>
       <h2 className='section-header'>RESUME</h2>

@@ -52,8 +52,8 @@ const Contact = () => {
                             <FaGithubSquare className={styles.socialIcon} size={48} />
                         </a>
                         <div className={styles.socialLink}>
-                            <a href={githubURL} target='_blank'>github.com/</a>
-                            <a href={githubURL} target='_blank'>Bykerbry</a>
+                            <a href={githubURL} target='_blank' rel="noreferrer">github.com/</a>
+                            <a href={githubURL} target='_blank' rel="noreferrer">Bykerbry</a>
                         </div>
                     </div>
                     <div>
