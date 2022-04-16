@@ -62,17 +62,24 @@
     height: 7.5rem;
 }
 
-.contactForm > button {
-    margin: 0 auto;
-}
 
 .submitBtnContainer {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
 }
 
 .submitBtnContainer > button {
     margin: $l;
+}
+
+.submitBtnContainer > button:disabled {
+    opacity: .75;
+    cursor: default;
+    color: $white;
+    background-color: $accent;
 }
 
 .errorMsg {

@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import { FaLinkedin, FaGithubSquare } from 'react-icons/fa'
 import { FaEnvelope } from 'react-icons/fa'
+import ReCAPTCHA from "react-google-recaptcha";
 import styles from '../styles/components/Contact.module.scss'
 
 const Contact = () => {
     const [sending, setSending] = useState(false)
     const [messageSent, setMessageSent] = useState(false)
     const [messageError, setMessageError] = useState(false)
+    const [recapchaError, setRecapchaError] = useState(false)
+    const recaptchaRef = useRef();
 
     const { register, handleSubmit, errors, reset } = useForm()
 
@@ -18,10 +21,12 @@ const Contact = () => {
 
     const handleSubmitContactForm = (data) => {
         setSending(true)
-        axios.post(apiGatewayUrl, data)
+        if (recaptchaRef.current.getValue()) {
+            axios.post(apiGatewayUrl, data)
             .then(response => {
                 setSending(false)
                 setMessageSent(true)
+                setRecapchaError(false)
                 reset()
                 console.log(response.data)
             })
@@ -29,9 +34,21 @@ const Contact = () => {
                 setSending(false)
                 setMessageSent(true)
                 setMessageError(true)
+                setRecapchaError(false)
                 console.log(error.message)
             })
+        } else {
+            setSending(false);
+            setRecapchaError(true)
+        }
     } 
+
+    const handleChangeReCAPTCHA = (data) => {
+        if (data) {
+            setRecapchaError(false);
+        }
+    }
+
     return (
         <section className={styles.contactContainer} id='contact'>
             <h2 className='section-header'>CONTACT</h2>
@@ -107,15 +124,22 @@ const Contact = () => {
                             name='message' 
                             aria-label='Message'
                             placeholder='Message*' 
-                            ref={register({ required: true })} 
+                            ref={register({ required: true })}
                         />
                         {errors.message && <span className={styles.errorMsg}>Please include the message you'd like to send me.</span>}
                     </div>
                     { messageSent && !messageError && <h3 className={styles.thankYouMsg}>Thank you! Your message has been sent.</h3>}
                     { messageSent && messageError && <p>Sorry, there was an error. Please try again later or try reaching out to me via email or via one of my social media links.</p>}
-
+                    { recapchaError && <p>Please Verify with ReCAPTCHA</p>}
                     <div className={styles.submitBtnContainer}>
-                        <button type='submit'>{ sending ? 'Sending' : 'Send Message' }</button>
+                        <ReCAPTCHA 
+                            sitekey='6LespXsfAAAAAHyM-Ap2Npv-Mut0Lj8Tj4r0_w-b' 
+                            onChange={handleChangeReCAPTCHA}
+                            ref={recaptchaRef}
+                        />
+                        <button type='submit' disabled={sending}>
+                            { sending ? 'Sending...' : 'Send Message' }
+                        </button>
                     </div>
                 </form>
             </div>
